@@ -3,12 +3,14 @@
     <Layout>
       <Header class="head">
         <Menu mode="horizontal" theme="light" active-name="1">
-          <div class="layout-logo1">
-            <img src="../assets/pathroot.png"/>
-          </div>
-          <div class="layout-text">
-            博客
-          </div>
+                    <span class="layout-logo">
+                        <img src="../assets/pathroot.png"/>
+                        <Divider type="vertical"/>
+                    </span>
+          <Breadcrumb separator=">" class="layout-text">
+            <BreadcrumbItem to="/Home">Home</BreadcrumbItem>
+            <BreadcrumbItem>我的文章</BreadcrumbItem>
+          </Breadcrumb>
           <div class="layout-search">
             <Input search placeholder="搜索文章"/>
           </div>
@@ -36,7 +38,7 @@
             <h1 class="midtitle">{{item.title}}</h1>
             <div v-if="item.imgsrc!==null">
               <div class="leftpic">
-                <img :src="require('../assets/'+item.imgsrc+'.png')" class="leftimg">
+                <img src="require('../assets/'+item.imgsrc+'.png')" class="leftimg">
               </div>
             </div>
             <div v-else></div>
@@ -51,25 +53,24 @@
             </div>
             <div class="rightmess">
               <Icon type="ios-eye-outline"/>
-              {{item.watched}}
+              500
               <Icon type="ios-chatbubbles-outline"/>
-              {{item.talk}}
+              166
               <Icon type="ios-thumbs-up-outline"/>
-              {{item.like}}
+              241
             </div>
           </div>
           <Divider/>
         </div>
         <Page :total="10" class="page"/>
       </div>
-
     </Layout>
   </div>
 </template>
 
 <script>
   export default {
-    name: "Home",
+    name: "Mine",
     data() {
       return {
         data: [
@@ -79,10 +80,7 @@
             description: '如果要我总结一下学习前端以来我遇到了哪些瓶颈，那么面向对象一定是第一个毫不犹豫想到的。尽管我现在对于面向\n' +
               '对象有了一些的了解，但是当初的那种似懂非懂的痛苦，依然历历在目。为了帮助大家能够更加直观的学习和了解面向\n' +
               '对象，我会用尽量简单易懂的描述来展示面向对象的相关知识。',
-            imgsrc: null,
-            watched: 66,
-            talk: 66,
-
+            imgsrc: null
           },
           {
             index: 2,
@@ -106,21 +104,7 @@
           },
         ]
       }
-    },
-    // created(){
-    //   this.$axios.get('http://jspang.com/DemoApi/oftenGoods.php')
-    //           //then获取成功；response成功后的返回值（对象）
-    //           .then(response=>{
-    //             console.log(response);
-    //             this.oftenGoods=response.data;
-    //           })
-    //           //获取失败
-    //           .catch(error=>{
-    //             console.log(error);
-    //             alert('网络错误，不能访问');
-    //           })
-    // }
-
+    }
   }
 </script>
 
@@ -140,12 +124,13 @@
     background-color: #ffffff !important;
     box-shadow: 0px 1px 6px 0px rgba(0, 0, 0, 0.1);
   }
-  .layout-logo1 {
+  .layout-logo {
     width: 50px;
     float: left;
     position: relative;
     margin-top: 8px;
-    left: 20px;
+    margin-left: 28px;
+    border-right: 1px solid #2c3e50;
     height: 42px;
   }
 
@@ -154,8 +139,7 @@
     position: relative;
     top: 18px;
     left: 25px;
-    overflow: hidden;
-    width: 55px;
+    width: 200px;
     height: 20px;
     font-size: 20px;
     font-weight: normal;
@@ -163,13 +147,14 @@
     line-height: 22px;
     letter-spacing: 1px;
     color: #333333;
+    padding: 0 5px;
   }
 
   .layout-search {
     width: 200px;
     height: 32px;
     position: relative;
-    margin-left: 750px;
+    margin-left: 660px;
     display: block;
     float: left;
   }
@@ -177,7 +162,7 @@
   .layout-nav {
     width: 420px;
     margin: 0 auto;
-    margin-right: 20px;
+    margin-right: 10px;
   }
 
   .username {
