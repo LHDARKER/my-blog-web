@@ -8,14 +8,18 @@
                     </span>
           <Breadcrumb separator=">" class="layout-text1">
             <BreadcrumbItem to="/Home">Home</BreadcrumbItem>
-            <BreadcrumbItem>文章详情</BreadcrumbItem>
+            <BreadcrumbItem to="/content">文章详情</BreadcrumbItem>
             <BreadcrumbItem>编辑</BreadcrumbItem>
           </Breadcrumb>
-
-          <div class="but">
-            <Button type="info" ghost class="but1">删除</Button>
-            <Button type="primary" class="but2">编辑</Button>
-          </div><img src="../assets/Github.png" class="touxiang">
+          <div class="cbut" v-if="this.arcid==null">
+            <Button type="info" ghost class="cbut1" @click="onDelete">删除</Button>
+            <Button type="primary" class="cbut2" @click="onCreated">新建</Button>
+          </div>
+            <div v-else  class="cbut">
+              <Button type="info" ghost class="cbut1" @click="onDelete">返回</Button>
+              <Button type="primary" class="cbut2" @click="onRerite(arcid)">修改</Button>
+            </div>
+          <img src="../assets/Github.png" class="touxiang">
         </Menu>
       </Header>
 
@@ -31,15 +35,80 @@
   import E from "wangeditor";
 
   var editor;
+  var arcs = {
+    title:"",
+    content:"",
+    uid:"",
+    accountId:"",
+    isdisDeleted:"",
+  };
 
   export default {
     name: "WriteArticle",
     data: function () {
       return {
-        Title: "",
+        username:this.$route.query.username,
+        accountId:this.$route.query.userid,
+        arcid:this.$route.query.arcid,
+        title: "",
         Content: "",
-        // imgurl:'../assets/github.png'
       };
+    },
+    methods:{
+      onDelete(){
+        this.$router.push({
+          "path": "/home",
+          "query": {
+            "userid": this.accountId,
+            "username": this.username,
+          }
+        })
+      },
+      onCreated(){
+        var htmlcode=editor.txt.html()
+        var title = document.getElementsByTagName('h1')
+        var content=document.getElementsByTagName('p')
+        arcs.title=title[1].innerText
+        arcs.content=content[2].innerText
+        arcs.accountId=this.accountId
+        console.log( this.accountId);
+
+        this.$axios.post("api/article/addarticle",arcs).then((res) => {
+          console.log( "isdata",res.data);
+          this.$router.push({
+            "path":"/mine",
+            "query":{
+              "userid":this.accountId,
+              "username":this.username,
+            }
+          })
+        });
+      },
+      onRerite(uid){
+        var htmlcode=editor.txt.html()
+        var title = document.getElementsByTagName('h1')
+        var content=document.getElementsByTagName('p')
+        arcs.title=title[1].innerText
+        arcs.content=content[2].innerText
+        arcs.accountId=this.accountId
+        arcs.uid=uid
+        arcs.isdisDeleted=0//无法赋值
+        console.log(arcs.data);
+        console.log(uid);
+        this.$axios.post("api/article/modifyarticle",arcs).then((res) => {
+          console.log( "isdata",res.data);
+          alert("修改成功")
+          this.$router.push({
+            "path":"/home",
+            "query":{
+              "userid":this.accountId,
+              "username":this.username,
+            }
+          })
+        });
+      },
+
+
     },
     mounted: function () {
       var That = this;
@@ -57,10 +126,7 @@
   };
 </script>
 
-<style>
-  html, body {
-    height: 100%;
-  }
+<style >
   .layout1 {
     border: 1px solid #d7dde4;
     background: #f5f7f9;
@@ -100,6 +166,12 @@
     color: #333333;
     padding: 0 5px;
   }
+  .cbut {
+    float: right;
+  }
+  .cbut2 {
+      margin-left: 5px;
+  }
   .touxiang{
     width: 41px;
     height: 41px;
@@ -107,16 +179,8 @@
     margin-right: 20px;
     float: right;
   }
-  .but {
-    right: 15px;
-    float: right;
-  }
-
-  .but2 {
-    margin-left: 5px;
-  }
   #edit > div > div > div.w-e-text-container{
-    margin: 1% 20%;
+    margin: 1% 20% !important;
     border: 2px solid #c9d8db !important;
     box-shadow: 0px 0px 6px 0px rgba(0, 0, 0, 0.16);
     border-radius: 4px;
@@ -138,6 +202,6 @@
   #edit,
   #edit > div.ArticleDetail,
   #edit > div.ArticleDetail > div {
-    height: 100%;
+    height: 90%;
   }
 </style>

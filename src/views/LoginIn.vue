@@ -22,6 +22,7 @@
   .loginin
   {
     text-align: center;
+    height: 100%;
   }
   html, head, body {
     margin: 0;

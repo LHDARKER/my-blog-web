@@ -6,20 +6,20 @@
                     <span class="layout-logo">
                         <img src="../assets/pathroot.png"/>
                     </span>
-          <Breadcrumb separator=">" class="layout-text">
+          <Breadcrumb separator=">" class="layout-text1">
             <BreadcrumbItem to="/Home">Home</BreadcrumbItem>
             <BreadcrumbItem>文章详情</BreadcrumbItem>
           </Breadcrumb>
           <div class="but">
-            <Button type="info" ghost class="but1">取消发布</Button>
-            <Button type="primary" class="but2">发布</Button>
+            <Button type="info" ghost class="but1" v-on:click="onDelete(arcid)">删除</Button>
+            <Button type="primary" class="but2" v-on:click="onWrite(arcid)">编辑</Button>
           </div>
         </Menu>
       </Header>
 
       <div id="content">
         <div class="con-title">
-          <h2>qweqwe</h2>
+          <h1>qweqwe</h1>
         </div>
         <hr/>
         <div class="con-tag">
@@ -40,7 +40,7 @@
         </div>
         <div class="con-article">
           <p>
-            qweqweqweqeqwssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssseww</p>
+            seww</p>
           <pre><code>
 function cool(x) {
   return x + 1;
@@ -100,10 +100,16 @@ function cool(x) {
   import E from 'wangeditor'
 
   var editor;
+  var arcs = {
+      arcid: "",
+  };
   export default {
 
     data() {
       return {
+          username:this.$route.query.username,
+          userid:this.$route.query.userid,
+          arcid:this.$route.query.arcid,
         count: ["Java教程", "java编程基础"],
         Title: '',
         Content: ''
@@ -123,6 +129,37 @@ function cool(x) {
         const index = this.count.indexOf(name);
         this.count.splice(index, 1);
       },
+        onDelete(uid){
+            arcs.arcid=this.arcid
+            console.log(arcs.arcid)
+            console.log(uid)
+            var deles = new URLSearchParams();
+            deles.append('uid',uid);
+            this.$axios.post("api/article/deletearticle",deles).then((res) => {
+                this.data=res.data
+                console.log( "isdata",this.data);
+                alert("删除成功")
+            })
+            this.$router.push({
+                "path":"/home",
+                "query":{
+                    "userid":this.userid,
+                    "username":this.username,
+                }
+            })
+        },
+        onWrite(uid){
+        console.log(this.arcid)
+          console.log(uid)
+            this.$router.push({
+                "path":"/about",
+                "query":{
+                    "userid":this.userid,
+                    "username":this.username,
+                    "arcid":this.arcid,
+                }
+            })
+        },
     },
     mounted: function () {
       var That = this;

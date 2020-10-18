@@ -64,8 +64,16 @@ export default {
       (logs.account = this.account), (logs.password = this.password);
       this.$axios.post("api/user/login", logs).then((res) => {
         console.log(res.data);
-        if(res.data.code==200){
-          router.push("/home")
+        if(res.data.code===200){
+          console.log(res.data.body.account)
+          console.log(res.data.body.uid)
+          this.$router.push({
+            "path":"/home",
+             "query":{
+            "userid":res.data.body.uid,
+               "username":res.data.body.account,
+          }
+        })
         }
         else{
           alert("failed")
