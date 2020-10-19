@@ -7,7 +7,9 @@
                         <img src="../assets/pathroot.png"/>
                     </span>
           <Breadcrumb separator=">" class="layout-text1">
+            <Button class="tohomebut3" ghost  v-on:click="toHome"></Button>
             <BreadcrumbItem to="/Home">Home</BreadcrumbItem>
+            <Button class="tohomebut4" ghost  v-on:click="toContent"></Button>
             <BreadcrumbItem to="/content">文章详情</BreadcrumbItem>
             <BreadcrumbItem>编辑</BreadcrumbItem>
           </Breadcrumb>
@@ -76,13 +78,31 @@
         this.$axios.post("api/article/addarticle",arcs).then((res) => {
           console.log( "isdata",res.data);
           this.$router.push({
-            "path":"/mine",
+            "path":"/home",
             "query":{
               "userid":this.accountId,
               "username":this.username,
             }
           })
         });
+      },
+      toHome(){
+        this.$router.push({
+          "path":"/home",
+          "query":{
+            "userid":this.userid,
+            "username":this.username,
+          }
+        })
+      },
+      toContent(){
+        this.$router.push({
+          "path":"/content",
+          "query":{
+            "userid":this.userid,
+            "username":this.username,
+          }
+        })
       },
       onRerite(uid){
         var htmlcode=editor.txt.html()
@@ -178,6 +198,18 @@
     margin-top: 10px;
     margin-right: 20px;
     float: right;
+  }
+  .tohomebut3{
+    position: absolute;
+    width: 41px;
+    height: 15px;
+    margin-bottom: 24px;
+  }
+  .tohomebut4{
+    position: absolute;
+    width: 60px;
+    height: 15px;
+    margin-bottom: 24px;
   }
   #edit > div > div > div.w-e-text-container{
     margin: 1% 20% !important;

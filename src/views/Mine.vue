@@ -8,7 +8,8 @@
             <Divider type="vertical" />
           </span>
           <Breadcrumb separator=">" class="layout-text">
-            <BreadcrumbItem to="/home">Home</BreadcrumbItem>
+            <Button class="tohomebut" ghost  v-on:click="toHome"></Button>
+            <BreadcrumbItem>Home</BreadcrumbItem>
             <BreadcrumbItem>我的文章</BreadcrumbItem>
           </Breadcrumb>
           <div class="layout-search">
@@ -35,7 +36,7 @@
       <div class="mid">
         <div v-for="item in data" :key="item.index">
           <div>
-            <h1 class="midtitle">{{ item.title }}</h1>
+            <h1 class="midtitle" v-on:click="onContent(item.uid)">{{ item.title }}</h1>
             <div>
               <div class="leftpic" v-if="item.thumbnail!=null">
                 <img :src="require('../assets/pic26.png')" class="leftimg">
@@ -47,7 +48,7 @@
             </div>
             <div class="leftmess">
               <Icon type="ios-person-outline" />
-              <span>我不是大神</span>
+              <span>{{item.accountId}}</span>
               <Icon type="ios-time-outline" />
               <span>{{ item.createDate }}</span>
             </div>
@@ -56,13 +57,13 @@
               {{item.viewNum}}
               <Icon type="ios-chatbubbles-outline"/>
               {{item.commentNum}}
-              <Icon type="ios-thumbs-up-outline"/>
+              <Button size="small" v-on:click="onLike(item.uid)"><Icon type="ios-thumbs-up-outline"/></Button>
               {{item.likeNum}}
             </div>
           </div>
           <Divider />
         </div>
-        <Page :total="100" class="page" />
+        <Page :total="100" class="page" @on-change="onchange"/>
       </div>
     </Layout>
   </div>
@@ -77,14 +78,15 @@ export default {
       userid:this.$route.query.userid,
       data: [
       ],
+      pagenum:2
     };
   },
   mounted() {
     console.log("datais:", this.data);
     var params = new URLSearchParams();
-    params.append("uid", 1);
+    params.append("uid", this.$route.query.userid);
     params.append("page", 1);
-    params.append("size", 1);
+    params.append("size", 3);
     this.$axios.post("api/article/findarticlesbyuser", params).then((res) => {
       this.data = res.data.body.content;
       console.log(this.data);
@@ -92,11 +94,53 @@ export default {
   },
 
   methods: {
+    onchange(pagenum){
+      console.log("当前页面为：",pagenum)
+      this.pagenum=pagenum
+      var params = new URLSearchParams();
+      params.append('page', pagenum);
+      params.append('size', 3);
+      this.$axios.post("api/article/findallarticles",params).then((res) => {
+        this.data=res.data.body.content
+        console.log( "isdata",this.data);
+        console.log( "isdata",this.data.length);
+      });
+    },
     onAbout(){
       console.log(this.userid)
       console.log(this.username)
       this.$router.push({
         "path":"/about",
+        "query":{
+          "userid":this.userid,
+          "username":this.username,
+        }
+      })
+    },
+    onContent(index){
+      console.log(this.userid)
+      console.log(this.username)
+      console.log(index)
+      this.$router.push({
+        "path":"/content",
+        "query":{
+          "userid":this.userid,
+          "username":this.username,
+          "arcid":index,
+        }
+      })
+    },
+    onLike(index){
+      var likes = new URLSearchParams();
+      likes.append('articleId', index);
+      likes.append('accountId', this.userid);
+      this.$axios.post("api/article/likearticle",likes).then((res) => {
+        console.log("res data", res.data);
+      });
+    },
+    toHome(){
+      this.$router.push({
+        "path":"/home",
         "query":{
           "userid":this.userid,
           "username":this.username,
@@ -159,7 +203,12 @@ export default {
   color: #333333;
   padding: 0 5px;
 }
-
+.tohomebut{
+  position: absolute;
+  width: 60px;
+  height: 25px;
+  margin-bottom: 24px;
+}
 .layout-search {
   width: 200px;
   height: 32px;
@@ -247,7 +296,7 @@ export default {
 
 .page {
   float: right;
-  width: 150px;
+  width: auto;
   margin-bottom: 41px;
 }
 </style>

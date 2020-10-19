@@ -52,7 +52,7 @@
               {{item.viewNum}}
               <Icon type="ios-chatbubbles-outline"/>
               {{item.commentNum}}
-              <Icon type="ios-thumbs-up-outline"/>
+             <Button size="small" v-on:click="onLike(item.uid)"><Icon type="ios-thumbs-up-outline"/></Button>
               {{item.likeNum}}
             </div>
           </div>
@@ -124,6 +124,14 @@
             "arcid":index,
           }
         })
+      },
+      onLike(index){
+        var likes = new URLSearchParams();
+        likes.append('articleId', index);
+        likes.append('accountId', this.userid);
+        this.$axios.post("api/article/likearticle",likes).then((res) => {
+          console.log("res data", res.data);
+        });
       },
 
     },
