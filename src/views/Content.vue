@@ -7,7 +7,8 @@
             <img src="../assets/pathroot.png" />
           </span>
           <Breadcrumb separator=">" class="layout-text1">
-            <BreadcrumbItem to="/Home">Home</BreadcrumbItem>
+            <Button class="tohomebut" ghost  v-on:click="toHome"></Button>
+            <BreadcrumbItem>Home</BreadcrumbItem>
             <BreadcrumbItem>文章详情</BreadcrumbItem>
           </Breadcrumb>
           <div class="but">
@@ -268,6 +269,15 @@ export default {
       });
 
     },
+    toHome(){
+      this.$router.push({
+        "path":"/home",
+        "query":{
+          "userid":this.userid,
+          "username":this.username,
+        }
+      })
+    },
     handleRender(indexs) {
       this.$Modal.confirm({
         onOk: () => {
@@ -442,7 +452,12 @@ body {
 #content > div.con-article {
   padding: 0 5%;
 }
-
+.tohomebut{
+  position: absolute;
+  width: 41px;
+  height: 25px;
+  margin-bottom: 24px;
+}
 .layout1 * {
   text-align: left;
 }
